@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
-@SpringBootTest()
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 public class PersistedSystemRepositoryTest {
     private static Logger logger = LoggerFactory.getLogger(PersistedSystemRepositoryTest.class);
