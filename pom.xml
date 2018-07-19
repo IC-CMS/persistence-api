@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cms.sre</groupId>
+    <artifactId>persistence-api</artifactId>
+    <version>1.0.BUILDNUMBER</version>
+    <parent>
+        <groupId>cms.sre</groupId>
+        <artifactId>spring-parent-pom</artifactId>
+        <version>1.1.13</version>
+    </parent>
+    <scm>
+        <url>git@github.com:IC-CMS/persistence-api.git</url>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <id>bintray-ic-cms-Maven</id>
+            <name>ic-cms-Maven</name>
+            <url>https://api.bintray.com/maven/ic-cms/Maven/persistence-api/;publish=1</url>
+        </repository>
+    </distributionManagement>
+    <dependencies>
+        <!-- Spring Boot Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Homegrown Helpers -->
+        <dependency>
+            <groupId>cms.sre</groupId>
+            <artifactId>mongo-connection-helper</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
+        <!-- Common Data Model -->
+        <dependency>
+            <groupId>cms.sre</groupId>
+            <artifactId>dna-common-data-model</artifactId>
+            <version>1.2.3.dhhessldev2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.capitalone.dashboard</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Swagger Rest Documentation -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>2.0.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
