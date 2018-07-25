@@ -1,6 +1,7 @@
 package cms.sre.persistenceapi.service;
 
 import cms.sre.dna_common_data_model.system.System;
+import cms.sre.dna_common_data_model.system.Toaster;
 import cms.sre.persistenceapi.model.PersistedSystem;
 import cms.sre.persistenceapi.repository.PersistedSystemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -90,5 +94,71 @@ public class SystemPersistenceService {
         return this.mongoTemplate.remove(new Query().addCriteria(criteria), System.class)
                 .wasAcknowledged();
     }
+    //TODO: Improve this Draft
+    /*
+    public void pullAllByteData(){
+        List<System> sysList = getSystems();
+        //Instantiate new Amazon S3 Client Here
+
+        //Iterates through each individual System in the MongoDB
+        for(int i = 0, len = sysList.size(); i < len; i++){
+            ArrayList<byte[]> bytes = new ArrayList<>();
+
+            //Iterates through each toaster registered to the System
+            for(Toaster toaster : sysList.get(i).getToasters()){
+
+                bytes.add(toaster
+                        .getPackerScript()
+                        .getScriptFile()
+                        .getBinaryFile()
+                );
+
+                bytes.add(toaster
+                        .getTerraformScript()
+                        .getVariableScript()
+                        .getBinaryFile()
+                );
+
+                bytes.add(toaster
+                        .getTerraformScript()
+                        .getMainScript()
+                        .getBinaryFile()
+                );
+
+                bytes.add(toaster
+                        .getTerraformScript()
+                        .getDataSourcesScript()
+                        .getBinaryFile()
+                );
+
+                bytes.add(toaster
+                        .getTerraformScript()
+                        .getProviderScript()
+                        .getBinaryFile()
+                );
+
+            }
+
+            try{
+                File file = new File(sysList.get(i).getOwner() + "-" + sysList.get(i).getName());
+                FileOutputStream outputStream = new FileOutputStream(file);
+
+                for(int iii = 0, length = bytes.size(); iii < length; iii++){
+                    outputStream.write(bytes.get(iii));
+                }
+
+                //PUT TO AWS S3
+                //s3Instance.putObject(bucketName, file.getName(), file);
+
+            }
+            catch(Exception e){
+                e.printStackTrace();
+
+            }
+        }
+
+    }
+    */
+
 
 }

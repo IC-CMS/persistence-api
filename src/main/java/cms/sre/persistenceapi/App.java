@@ -2,6 +2,9 @@ package cms.sre.persistenceapi;
 
 import cms.sre.mongo_connection_helper.MongoClientFactory;
 import cms.sre.mongo_connection_helper.MongoClientParameters;
+import cms.sre.persistenceapi.util.BucketHandler;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import org.slf4j.Logger;
@@ -86,6 +89,12 @@ public class App
     @Value("${mongodb.mongoReplicaSetName:#{null}}")
     private String mongoReplicaSetName;
 
+    @Value("${persistenceapi.defaultRegion:us-east-1}")
+    private String defaultRegion;
+
+    @Value("${persistenceapi.defaultName:defaultBucketName}")
+    private String defaultBucketName;
+
     @Bean
     public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
@@ -94,6 +103,22 @@ public class App
                 .paths(PathSelectors.any())
                 .build();
     }
+
+    @Bean
+    public BucketHandler bucketHandler(){
+        return new BucketHandler(defaultBucketName, defaultRegion);
+    }
+
+    @Bean
+    public AmazonS3 amazonS3(){
+        AmazonS3 s3 = AmazonS3ClientBuilder
+                        .standard()
+                        .withRegion(bucketHandler().getRegionName())
+                        .build();
+        return s3;
+
+    }
+
 
 //    @Override
 //    public MongoClient mongoClient() {

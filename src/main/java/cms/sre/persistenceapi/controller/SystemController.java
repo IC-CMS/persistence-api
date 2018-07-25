@@ -17,7 +17,6 @@ public class SystemController {
         this.systemPersistenceService = systemPersistenceService;
     }
 
-
     @GetMapping("/systems")
     public List<System> getSystems(){ return this.systemPersistenceService.getSystems(); }
 

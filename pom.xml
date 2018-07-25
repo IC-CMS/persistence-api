@@ -82,5 +82,11 @@
             <version>2.0.3</version>
             <scope>test</scope>
         </dependency>
+        <!-- Amazon S3 Dependency-->
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk</artifactId>
+                <version>1.11.327</version>
+            </dependency>
     </dependencies>
 </project>
