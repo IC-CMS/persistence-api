@@ -2,8 +2,9 @@ package cms.sre.persistenceapi.service;
 
 import cms.sre.dna_common_data_model.system.System;
 import cms.sre.dna_common_data_model.system.Toaster;
-import cms.sre.persistenceapi.model.PersistedSystem;
+import cms.sre.persistenceapi.model.MongoPersistedSystem;
 import cms.sre.persistenceapi.repository.PersistedSystemRepository;
+import cms.sre.persistenceapi.util.BucketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -23,13 +24,16 @@ public class SystemPersistenceService {
     private PersistedSystemRepository persistedSystemRepository;
     private MongoTemplate mongoTemplate;
 
-    private static System strip(PersistedSystem persistedSystem){
+    @Autowired
+    BucketHandler bucketHandler;
+
+    private static System strip(MongoPersistedSystem mongoPersistedSystem){
         return new System()
-                .setToasters(persistedSystem.getToasters())
-                .setOwner(persistedSystem.getOwner())
-                .setName(persistedSystem.getName())
-                .setDescription(persistedSystem.getDescription())
-                .setDependenciesMap(persistedSystem.getDependenciesMap());
+                .setToasters(mongoPersistedSystem.getToasters())
+                .setOwner(mongoPersistedSystem.getOwner())
+                .setName(mongoPersistedSystem.getName())
+                .setDescription(mongoPersistedSystem.getDescription())
+                .setDependenciesMap(mongoPersistedSystem.getDependenciesMap());
     }
 
     @Autowired
@@ -39,8 +43,8 @@ public class SystemPersistenceService {
 
     public List<System> getSystems(){
         LinkedList<System> ret = new LinkedList<>();
-        this.persistedSystemRepository.findAll().forEach(persistedSystem -> {
-            ret.add(strip(persistedSystem));
+        this.persistedSystemRepository.findAll().forEach(mongoPersistedSystem -> {
+            ret.add(strip(mongoPersistedSystem));
         });
 
         return ret;
@@ -48,16 +52,16 @@ public class SystemPersistenceService {
 
     public List<System> getSystemsByOwner(String owner){
         LinkedList<System> ret = new LinkedList<>();
-        this.persistedSystemRepository.findByOwner(owner).forEach(persistedSystem -> {
-            ret.add(strip(persistedSystem));
+        this.persistedSystemRepository.findByOwner(owner).forEach(mongoPersistedSystem -> {
+            ret.add(strip(mongoPersistedSystem));
         });
         return ret;
     }
 
     public List<System> getSystemsByOwnerAndName(String owner, String name){
         LinkedList<System> ret = new LinkedList<>();
-        this.persistedSystemRepository.findByOwnerAndName(owner, name).forEach(persistedSystem -> {
-            ret.add(strip(persistedSystem));
+        this.persistedSystemRepository.findByOwnerAndName(owner, name).forEach(mongoPersistedSystem -> {
+            ret.add(strip(mongoPersistedSystem));
         });
         return ret;
     }
@@ -94,71 +98,4 @@ public class SystemPersistenceService {
         return this.mongoTemplate.remove(new Query().addCriteria(criteria), System.class)
                 .wasAcknowledged();
     }
-    //TODO: Improve this Draft
-    /*
-    public void pullAllByteData(){
-        List<System> sysList = getSystems();
-        //Instantiate new Amazon S3 Client Here
-
-        //Iterates through each individual System in the MongoDB
-        for(int i = 0, len = sysList.size(); i < len; i++){
-            ArrayList<byte[]> bytes = new ArrayList<>();
-
-            //Iterates through each toaster registered to the System
-            for(Toaster toaster : sysList.get(i).getToasters()){
-
-                bytes.add(toaster
-                        .getPackerScript()
-                        .getScriptFile()
-                        .getBinaryFile()
-                );
-
-                bytes.add(toaster
-                        .getTerraformScript()
-                        .getVariableScript()
-                        .getBinaryFile()
-                );
-
-                bytes.add(toaster
-                        .getTerraformScript()
-                        .getMainScript()
-                        .getBinaryFile()
-                );
-
-                bytes.add(toaster
-                        .getTerraformScript()
-                        .getDataSourcesScript()
-                        .getBinaryFile()
-                );
-
-                bytes.add(toaster
-                        .getTerraformScript()
-                        .getProviderScript()
-                        .getBinaryFile()
-                );
-
-            }
-
-            try{
-                File file = new File(sysList.get(i).getOwner() + "-" + sysList.get(i).getName());
-                FileOutputStream outputStream = new FileOutputStream(file);
-
-                for(int iii = 0, length = bytes.size(); iii < length; iii++){
-                    outputStream.write(bytes.get(iii));
-                }
-
-                //PUT TO AWS S3
-                //s3Instance.putObject(bucketName, file.getName(), file);
-
-            }
-            catch(Exception e){
-                e.printStackTrace();
-
-            }
-        }
-
-    }
-    */
-
-
 }

@@ -1,14 +1,14 @@
 package cms.sre.persistenceapi.repository;
 
-import cms.sre.persistenceapi.model.PersistedSystem;
+import cms.sre.persistenceapi.model.MongoPersistedSystem;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface PersistedSystemRepository extends PagingAndSortingRepository<PersistedSystem, String> {
+public interface PersistedSystemRepository extends PagingAndSortingRepository<MongoPersistedSystem, String> {
 
-    List<PersistedSystem> findByOwner(String owner);
+    List<MongoPersistedSystem> findByOwner(String owner);
 
-    List<PersistedSystem> findByOwnerAndName(String owner, String name);
+    List<MongoPersistedSystem> findByOwnerAndName(String owner, String name);
 
 }

@@ -5,17 +5,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class PersistedSystem extends System {
+public class MongoPersistedSystem extends System {
 
     @Id
     private String id;
 
 
-    public PersistedSystem(){
+    public MongoPersistedSystem(){
         super();
     }
 
-    public PersistedSystem(System system){
+    public MongoPersistedSystem(System system){
         super();
 
         super.setDependenciesMap(system.getDependenciesMap())
@@ -29,7 +29,7 @@ public class PersistedSystem extends System {
         return id;
     }
 
-    public PersistedSystem setId(String id) {
+    public MongoPersistedSystem setId(String id) {
         this.id = id;
         return this;
     }
