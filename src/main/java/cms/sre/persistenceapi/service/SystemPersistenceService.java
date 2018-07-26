@@ -3,6 +3,7 @@ package cms.sre.persistenceapi.service;
 import cms.sre.dna_common_data_model.system.System;
 import cms.sre.dna_common_data_model.system.Toaster;
 import cms.sre.persistenceapi.model.MongoPersistedSystem;
+import cms.sre.persistenceapi.model.S3PersistedScriptFile;
 import cms.sre.persistenceapi.repository.PersistedSystemRepository;
 import cms.sre.persistenceapi.util.BucketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class SystemPersistenceService {
 
     @Autowired
     BucketHandler bucketHandler;
+
+    @Autowired
+    private S3PersistedScriptFileService fileService;
 
     private static System strip(MongoPersistedSystem mongoPersistedSystem){
         return new System()
@@ -76,8 +80,7 @@ public class SystemPersistenceService {
                 .set("toasters", system.getToasters())
                 .set("dependenciesMap", system.getDependenciesMap());
 
-        return this.mongoTemplate.upsert(query, update, System.class)
-            .wasAcknowledged();
+        return this.mongoTemplate.upsert(query, update, System.class).wasAcknowledged() && fileService.persistScriptsInS3(system);
     }
 
     public boolean upsert(List<System> systems){

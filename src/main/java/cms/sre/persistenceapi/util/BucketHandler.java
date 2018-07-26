@@ -71,8 +71,9 @@ public class BucketHandler {
             }
     }
 
-    public void putObjectInBucket(File file){
+    public boolean putObjectInBucket(File file, String location){
 
+        boolean ret = false;
         //Write the Script File's Byte data to a file
         //assign the file a location in the bucket
         //put the file in new location
@@ -82,13 +83,16 @@ public class BucketHandler {
         }
         else{
             try{
-                s3.putObject(this.bucketName, "Key" + "/", file);
+                s3.putObject(this.bucketName, location, file);
+                ret = true;
             }
             catch(Exception e){
                 e.printStackTrace();
+                ret = false;
             }
 
         }
+        return ret;
     }
 
     /**
@@ -100,7 +104,7 @@ public class BucketHandler {
     public byte[] getFileFromBucket(String location){
 
         byte[] bytes = null;
-        S3Object object = s3.getObject(bucketName, "/"  + location);
+        S3Object object = s3.getObject(bucketName,  location);
 
         try{
 
@@ -124,13 +128,11 @@ public class BucketHandler {
         List<System> systems = service.getSystems();
 
         for(System system : systems){
-            if(s3.doesObjectExist(bucketName, "/" + system.getName() + system.getOwner()) ||
-                    scriptFile.getBinaryFile().equals(getFileFromBucket("/" + system.getName() + system.getOwner()))){
+            if(s3.doesObjectExist(bucketName,  system.getName() + system.getOwner() + "/" + scriptFile.getFilename()) ||
+                    scriptFile.getBinaryFile().equals(getFileFromBucket(system.getName() + system.getOwner() + "/" + scriptFile.getFilename()))){
                 ret = true;
             }
         }
-
-
 
         return ret;
     }
