@@ -119,20 +119,17 @@ public class BucketHandler {
 
     /**
      * Indexes the Entire Bucket to see if the request file exists
-     * @param scriptFile
+     * @param location- location of the file
      * @return
      */
-    public boolean doesFileExist(ScriptFile scriptFile){
+    public boolean doesFileExist(String location){
         boolean ret = false;
 
-        List<System> systems = service.getSystems();
 
-        for(System system : systems){
-            if(s3.doesObjectExist(bucketName,  system.getName() + system.getOwner() + "/" + scriptFile.getFilename()) ||
-                    scriptFile.getBinaryFile().equals(getFileFromBucket(system.getName() + system.getOwner() + "/" + scriptFile.getFilename()))){
+            if(s3.doesObjectExist(bucketName,  location)){
                 ret = true;
             }
-        }
+
 
         return ret;
     }

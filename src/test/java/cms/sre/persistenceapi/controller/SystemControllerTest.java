@@ -1,6 +1,7 @@
 package cms.sre.persistenceapi.controller;
 
 import cms.sre.dna_common_data_model.system.System;
+import cms.sre.persistenceapi.TestConfiguration;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
@@ -24,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 import java.util.List;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestConfiguration.class)
 @RunWith(SpringRunner.class)
 public class SystemControllerTest {
 
@@ -32,33 +33,7 @@ public class SystemControllerTest {
 
     private static MongodExecutable mongodExecutable;
 
-    @BeforeClass
-    public static void beforeClass(){
-        logger.info("Starting up Local MongoDb");
-        int port = 27017;
 
-        try {
-            IMongodConfig mongodConfig = new MongodConfigBuilder()
-                    .version(Version.Main.PRODUCTION)
-                    .net(new Net(port, Network.localhostIsIPv6()))
-                    .build();
-
-            mongodExecutable = MongodStarter.getDefaultInstance()
-                    .prepare(mongodConfig);
-
-            mongodExecutable.start();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @AfterClass
-    public static void afterClass(){
-        logger.info("Stopping up Local MongoDb");
-        if(mongodExecutable != null){
-            mongodExecutable.stop();
-        }
-    }
 
     @LocalServerPort
     private int port;

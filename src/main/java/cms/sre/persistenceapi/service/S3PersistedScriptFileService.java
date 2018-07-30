@@ -3,6 +3,7 @@ package cms.sre.persistenceapi.service;
 import cms.sre.dna_common_data_model.hashicorpFile.ScriptFile;
 import cms.sre.dna_common_data_model.system.System;
 import cms.sre.dna_common_data_model.system.Toaster;
+import cms.sre.persistenceapi.model.MongoPersistedSystem;
 import cms.sre.persistenceapi.model.S3PersistedScriptFile;
 import cms.sre.persistenceapi.util.BucketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,38 +21,56 @@ public class S3PersistedScriptFileService {
     @Autowired
     private BucketHandler bucketHandler;
 
-
+    private byte[] getContents(String s3Location){
+        return bucketHandler.getFileFromBucket(s3Location);
+    }
 
     /**
      * Checks to see if the File is already persisted in S3
-     * @param scriptFile The Desired File to be found
+     * @param scriptFileLocation The Desired File to be found
      * @return the result of the search of the database
      */
-    private boolean existsInS3(ScriptFile scriptFile) {
-        return bucketHandler.doesFileExist(scriptFile);
+    private boolean existsInS3(String scriptFileLocation) {
+        return bucketHandler.doesFileExist(scriptFileLocation);
     }
 
     //UPDATE FILES
-
+    /*
     /**
      * This Method Hydrates our scripts
      * @param scriptFile
      * @return
      */
-    private ScriptFile getFullyRealizedScriptFile(ScriptFile scriptFile) {
+    /*private ScriptFile getFullyRealizedScriptFile(ScriptFile scriptFile) {
         ScriptFile ret = scriptFile;
-        if (existsInS3(scriptFile) && scriptFile instanceof S3PersistedScriptFile) {
+        if (scriptFile instanceof S3PersistedScriptFile) {
 
             S3PersistedScriptFile s3PersistedScriptFile = (S3PersistedScriptFile) scriptFile;
 
             String loc = s3PersistedScriptFile.getS3Location();
 
-            s3PersistedScriptFile.setBinaryFile(this.convertFromFile(loc));
+            s3PersistedScriptFile.setBinaryFile(this.getContents(loc));
 
             ret = s3PersistedScriptFile;
 
         }
         return ret;
+    }
+    */
+    public void hydrateScripts(MongoPersistedSystem persistedSystem){
+        String sysName = persistedSystem.getName();
+        String sysOwner = persistedSystem.getOwner();
+        String searchLoc = sysName + sysOwner + "/";
+
+        List<ScriptFile> scripts = getScriptsFromSystem(persistedSystem);
+
+        for (ScriptFile scriptFile : scripts){
+            S3PersistedScriptFile persistedEquivalent = convertFromFileinS3(searchLoc + scriptFile.getFilename());
+
+            scriptFile.setBinaryFile(persistedEquivalent.getBinaryFile());
+        }
+        putScriptsInSystem(persistedSystem, scripts);
+
     }
 
     private File convertToFile(ScriptFile scriptFile, String fileName) {
@@ -65,11 +84,24 @@ public class S3PersistedScriptFileService {
         return file;
     }
 
-    private byte[] convertFromFile(String s3Location) {
-        return bucketHandler.getFileFromBucket(s3Location);
+    private S3PersistedScriptFile convertFromFileinS3(String s3Location) {
+
+        S3PersistedScriptFile persistedScriptFile = new S3PersistedScriptFile();
+
+        String[] splitLocation = s3Location.split("/");
+        int lastElement = splitLocation.length - 1 ;
+
+        if(bucketHandler.doesFileExist(s3Location)){
+           persistedScriptFile
+                   .setS3Location(s3Location)
+                   .setBinaryFile(bucketHandler.getFileFromBucket(s3Location))
+                   .setFilename(splitLocation[lastElement]);
+            return persistedScriptFile;
+        }
+        else{
+            return null;
+        }
     }
-
-
 
     /**
      * Method for Inputting to S3
@@ -136,6 +168,24 @@ public class S3PersistedScriptFileService {
             );
         }
         return scripts;
+    }
+    private void putScriptsInSystem(MongoPersistedSystem persistedSystem, List<ScriptFile> scriptFiles){
+
+        int count = 0;
+        for(Toaster toaster : persistedSystem.getToasters()){
+
+            toaster.getPackerScript().setScriptFile(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setVariableScript(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setMainScript(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setDataSourcesScript(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setProviderScript(scriptFiles.get(count));
+            count++;
+        }
+
     }
 
 }

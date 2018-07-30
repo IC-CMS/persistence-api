@@ -22,51 +22,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestConfiguration.class)
 @RunWith(SpringRunner.class)
 public class AppTest {
 
     @LocalServerPort
     private int port;
 
-    private static Logger logger = LoggerFactory.getLogger(AppTest.class);
-
-    private static MongodExecutable mongodExecutable;
-
-    @BeforeClass
-    public static void beforeClass(){
-        logger.info("Starting up Local MongoDb");
-        int port = 27017;
-
-        try {
-            IMongodConfig mongodConfig = new MongodConfigBuilder()
-                    .version(Version.Main.PRODUCTION)
-                    .net(new Net(port, Network.localhostIsIPv6()))
-                    .build();
-
-            mongodExecutable = MongodStarter.getDefaultInstance()
-                    .prepare(mongodConfig);
-
-            mongodExecutable.start();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @AfterClass
-    public static void afterClass(){
-        logger.info("Stopping up Local MongoDb");
-        if(mongodExecutable != null){
-            mongodExecutable.stop();
-        }
-    }
-
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Test
     public void contextLoadsTest(){
-        ;
+
     }
 
     @Test

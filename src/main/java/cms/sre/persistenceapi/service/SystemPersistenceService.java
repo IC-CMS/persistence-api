@@ -27,13 +27,11 @@ public class SystemPersistenceService {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private BucketHandler bucketHandler;
-
-    @Autowired
     private static S3PersistedScriptFileService fileService;
 
     private static System strip(MongoPersistedSystem mongoPersistedSystem){
-        //change the system's Toasters
+        fileService.hydrateScripts(mongoPersistedSystem);
+
         return new System()
                 .setToasters(mongoPersistedSystem.getToasters())
                 .setOwner(mongoPersistedSystem.getOwner())

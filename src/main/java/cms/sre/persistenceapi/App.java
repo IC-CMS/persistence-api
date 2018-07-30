@@ -3,6 +3,8 @@ package cms.sre.persistenceapi;
 import cms.sre.mongo_connection_helper.MongoClientFactory;
 import cms.sre.mongo_connection_helper.MongoClientParameters;
 import cms.sre.persistenceapi.util.BucketHandler;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.mongodb.Mongo;
@@ -89,7 +91,7 @@ public class App
     @Value("${mongodb.mongoReplicaSetName:#{null}}")
     private String mongoReplicaSetName;
 
-    @Value("${persistenceapi.defaultRegion:us-east-1}")
+    @Value("${persistenceapi.defaultRegion:US_EAST_1}")
     private String defaultRegion;
 
     @Value("${persistenceapi.defaultName:defaultBucketName}")
