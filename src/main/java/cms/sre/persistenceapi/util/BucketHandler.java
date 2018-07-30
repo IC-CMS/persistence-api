@@ -111,7 +111,7 @@ public class BucketHandler {
             bytes = IOUtils.toByteArray(object.getObjectContent());
         }
         catch(IOException e){
-
+                e.printStackTrace();
         }
 
         return bytes;
@@ -141,9 +141,5 @@ public class BucketHandler {
         s3.deleteObject(bucketName, location);
 
     }
-
-
-
-
 
 }

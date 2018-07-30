@@ -1,5 +1,6 @@
 package cms.sre.persistenceapi.service;
 
+import cms.sre.dna_common_data_model.hashicorpFile.ScriptFile;
 import cms.sre.dna_common_data_model.system.System;
 import cms.sre.dna_common_data_model.system.Toaster;
 import cms.sre.persistenceapi.model.MongoPersistedSystem;
@@ -26,12 +27,13 @@ public class SystemPersistenceService {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    BucketHandler bucketHandler;
+    private BucketHandler bucketHandler;
 
     @Autowired
-    private S3PersistedScriptFileService fileService;
+    private static S3PersistedScriptFileService fileService;
 
     private static System strip(MongoPersistedSystem mongoPersistedSystem){
+        //change the system's Toasters
         return new System()
                 .setToasters(mongoPersistedSystem.getToasters())
                 .setOwner(mongoPersistedSystem.getOwner())

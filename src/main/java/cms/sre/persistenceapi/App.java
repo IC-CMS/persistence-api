@@ -106,6 +106,7 @@ public class App
 
     @Bean
     public BucketHandler bucketHandler(){
+
         return new BucketHandler(defaultBucketName, defaultRegion);
     }
 
