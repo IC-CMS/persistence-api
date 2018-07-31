@@ -6,10 +6,16 @@ import cms.sre.dna_common_data_model.system.Toaster;
 import cms.sre.persistenceapi.model.MongoPersistedSystem;
 import cms.sre.persistenceapi.model.S3PersistedScriptFile;
 import cms.sre.persistenceapi.util.BucketHandler;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.Null;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,17 +27,10 @@ public class S3PersistedScriptFileService {
     @Autowired
     private BucketHandler bucketHandler;
 
+    private Logger logger = LoggerFactory.getLogger(S3PersistedScriptFileService.class);
+
     private byte[] getContents(String s3Location){
         return bucketHandler.getFileFromBucket(s3Location);
-    }
-
-    /**
-     * Checks to see if the File is already persisted in S3
-     * @param scriptFileLocation The Desired File to be found
-     * @return the result of the search of the database
-     */
-    private boolean existsInS3(String scriptFileLocation) {
-        return bucketHandler.doesFileExist(scriptFileLocation);
     }
 
     //UPDATE FILES
@@ -57,32 +56,37 @@ public class S3PersistedScriptFileService {
         return ret;
     }
     */
+    //------------------------------------------------ PULLING FROM S3--------------------------------------------------
     public void hydrateScripts(MongoPersistedSystem persistedSystem){
         String sysName = persistedSystem.getName();
         String sysOwner = persistedSystem.getOwner();
         String searchLoc = sysName + sysOwner + "/";
 
         List<ScriptFile> scripts = getScriptsFromSystem(persistedSystem);
-
+        //Grabs all the scripts of the System and then updates their binary content.
         for (ScriptFile scriptFile : scripts){
-            S3PersistedScriptFile persistedEquivalent = convertFromFileinS3(searchLoc + scriptFile.getFilename());
+            String location = searchLoc + scriptFile.getFilename();
+            try{
+                if(bucketHandler.doesFileExist(searchLoc + scriptFile.getFilename())){
 
-            scriptFile.setBinaryFile(persistedEquivalent.getBinaryFile());
+                    S3PersistedScriptFile persistedEquivalent = convertFromFileinS3(location);
+
+                    scriptFile.setBinaryFile(persistedEquivalent.getBinaryFile());
+                }
+                else{
+                    throw new AmazonS3Exception("Could not find File:"  + scriptFile.getFilename() + "at location:" + location);
+                }
+            }
+            catch(AmazonS3Exception e){
+                e.printStackTrace();
+            }
+
+
         }
         putScriptsInSystem(persistedSystem, scripts);
 
     }
 
-    private File convertToFile(ScriptFile scriptFile, String fileName) {
-        File file = new File(fileName + "/" + scriptFile.getFilename());
-        try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(scriptFile.getBinaryFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
 
     private S3PersistedScriptFile convertFromFileinS3(String s3Location) {
 
@@ -103,6 +107,25 @@ public class S3PersistedScriptFileService {
         }
     }
 
+    private void putScriptsInSystem(MongoPersistedSystem persistedSystem, List<ScriptFile> scriptFiles){
+
+        int count = 0;
+        for(Toaster toaster : persistedSystem.getToasters()){
+
+            toaster.getPackerScript().setScriptFile(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setVariableScript(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setMainScript(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setDataSourcesScript(scriptFiles.get(count));
+            count++;
+            toaster.getTerraformScript().setProviderScript(scriptFiles.get(count));
+            count++;
+        }
+
+    }
+    //--------------------------------------------PUSHING TO S3---------------------------------------------------------
     /**
      * Method for Inputting to S3
      *
@@ -119,6 +142,17 @@ public class S3PersistedScriptFileService {
         }
 
         return ret;
+    }
+
+    private File convertToFile(ScriptFile scriptFile, String fileName) {
+        File file = new File(fileName + "/" + scriptFile.getFilename());
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            outputStream.write(scriptFile.getBinaryFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     private List<File> pullByteData(System sys) {
@@ -169,23 +203,6 @@ public class S3PersistedScriptFileService {
         }
         return scripts;
     }
-    private void putScriptsInSystem(MongoPersistedSystem persistedSystem, List<ScriptFile> scriptFiles){
 
-        int count = 0;
-        for(Toaster toaster : persistedSystem.getToasters()){
-
-            toaster.getPackerScript().setScriptFile(scriptFiles.get(count));
-            count++;
-            toaster.getTerraformScript().setVariableScript(scriptFiles.get(count));
-            count++;
-            toaster.getTerraformScript().setMainScript(scriptFiles.get(count));
-            count++;
-            toaster.getTerraformScript().setDataSourcesScript(scriptFiles.get(count));
-            count++;
-            toaster.getTerraformScript().setProviderScript(scriptFiles.get(count));
-            count++;
-        }
-
-    }
 
 }

@@ -28,7 +28,7 @@ public class SystemController {
 
     @PutMapping("/systems")
     @PostMapping("/systems")
-    public List<System> upsertSystems(List<System> systems){
+    public @ResponseBody List<System> upsertSystems(@RequestBody List<System> systems){
         List<System> ret = null;
         if(this.systemPersistenceService.upsert(systems)){
             ret = systems;

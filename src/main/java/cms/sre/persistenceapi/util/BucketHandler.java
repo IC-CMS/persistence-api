@@ -20,7 +20,6 @@ public class BucketHandler {
 
     private String bucketName;
     private String regionName;
-    //unsure if this should be an instance variable
     private Logger logger = LoggerFactory.getLogger(BucketHandler.class);
 
     @Autowired
@@ -107,7 +106,6 @@ public class BucketHandler {
         S3Object object = s3.getObject(bucketName,  location);
 
         try{
-
             bytes = IOUtils.toByteArray(object.getObjectContent());
         }
         catch(IOException e){

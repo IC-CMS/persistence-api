@@ -30,7 +30,8 @@ public class SystemPersistenceService {
     private static S3PersistedScriptFileService fileService;
 
     private static System strip(MongoPersistedSystem mongoPersistedSystem){
-        fileService.hydrateScripts(mongoPersistedSystem);
+
+        //fileService.hydrateScripts(mongoPersistedSystem);
 
         return new System()
                 .setToasters(mongoPersistedSystem.getToasters())
@@ -80,7 +81,7 @@ public class SystemPersistenceService {
                 .set("toasters", system.getToasters())
                 .set("dependenciesMap", system.getDependenciesMap());
 
-        return this.mongoTemplate.upsert(query, update, System.class).wasAcknowledged() && fileService.persistScriptsInS3(system);
+        return this.mongoTemplate.upsert(query, update, System.class).wasAcknowledged(); //&& fileService.persistScriptsInS3(system);
     }
 
     public boolean upsert(List<System> systems){
