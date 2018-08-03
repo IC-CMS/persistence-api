@@ -65,7 +65,7 @@ public class BucketHandler {
                 }
             }
             catch(Exception e){
-                logger.info("Bucket creation unsuccessful.");
+                logger.error("Bucket creation unsuccessful.");
                 e.printStackTrace();
             }
     }
