@@ -71,7 +71,8 @@ public class SystemPersistenceServiceTest {
     @Test
     public void restTemplateTest(){
 
-        this.testRestTemplate.postForObject("http://localhost:" + this.port + "test", new System().setDependenciesMap(null), System.class);
+        System sys = this.testRestTemplate.postForObject("http://localhost:" + this.port + "test", new System().setDependenciesMap(null), System.class);
+        Assert.assertNotNull(sys);
     }
 
 }
