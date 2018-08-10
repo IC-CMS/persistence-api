@@ -1,12 +1,8 @@
 package cms.sre.persistenceapi.service;
 
-import cms.sre.dna_common_data_model.hashicorpFile.ScriptFile;
 import cms.sre.dna_common_data_model.system.System;
-import cms.sre.dna_common_data_model.system.Toaster;
 import cms.sre.persistenceapi.model.MongoPersistedSystem;
-import cms.sre.persistenceapi.model.S3PersistedScriptFile;
 import cms.sre.persistenceapi.repository.PersistedSystemRepository;
-import cms.sre.persistenceapi.util.BucketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,9 +10,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

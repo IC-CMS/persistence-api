@@ -7,15 +7,12 @@ import cms.sre.persistenceapi.model.MongoPersistedSystem;
 import cms.sre.persistenceapi.model.S3PersistedScriptFile;
 import cms.sre.persistenceapi.util.BucketHandler;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
