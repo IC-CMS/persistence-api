@@ -12,6 +12,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +65,13 @@ public class SystemPersistenceServiceTest {
         Assert.assertEquals(jsonRequest, responseString);
         Assert.assertNotNull(response);
 
+    }
 
+    @Ignore
+    @Test
+    public void restTemplateTest(){
 
-
+        this.testRestTemplate.postForObject("http://localhost:" + this.port + "test", new System().setDependenciesMap(null), System.class);
     }
 
 }
