@@ -72,7 +72,7 @@ public class SystemController {
 
     //TODO- TEST METHOD: This Method is not meant to be included in the final build, and is used for testing purposes.
     @RequestMapping(value = "/test", method = RequestMethod.POST)
-    public System postSystem(@RequestBody System system) throws Exception{
+    public System postSystem(@RequestBody String system) throws Exception{
 
         ObjectMapper mapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
@@ -80,7 +80,7 @@ public class SystemController {
         module.addKeyDeserializer(Toaster.class, new ToasterKeyDeserializer());
         mapper.registerModule(module);
 
-        return system;
+        return mapper.readValue(system, System.class);
     }
 
     /**
