@@ -70,17 +70,16 @@ public class SystemController {
         return ret;
     }
 
-    //TODO- TEST METHOD: This Method is not meant to be included in the final build, and is used for testing purposes.
+    /**
+     * Test Method used as an endpoint to see if the system was able to serialize/deserialize the incoming JSON
+     * @param system the system to be passed
+     * @return the system that was passed
+     *
+     */
     @RequestMapping(value = "/test", method = RequestMethod.POST)
-    public System postSystem(@RequestBody String system) throws Exception{
+    public System postSystem(@RequestBody System system){
 
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-
-        module.addKeyDeserializer(Toaster.class, new ToasterKeyDeserializer());
-        mapper.registerModule(module);
-
-        return mapper.readValue(system, System.class);
+        return system;
     }
 
     /**

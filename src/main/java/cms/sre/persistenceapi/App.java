@@ -1,8 +1,12 @@
 package cms.sre.persistenceapi;
 
+import cms.sre.dna_common_data_model.system.Toaster;
+import cms.sre.persistenceapi.model.deserializer.ToasterKeyDeserializer;
 import cms.sre.persistenceapi.util.BucketHandler;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -119,6 +124,20 @@ public class App
                         .build();
         return s3;
 
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(){
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+
+        module.addKeyDeserializer(Toaster.class, new ToasterKeyDeserializer());
+
+        mapper.registerModule(module);
+
+        converter.setObjectMapper(mapper);
+        return converter;
     }
 
 
