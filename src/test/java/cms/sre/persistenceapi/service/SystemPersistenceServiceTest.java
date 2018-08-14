@@ -2,6 +2,8 @@ package cms.sre.persistenceapi.service;
 
 import cms.sre.dna_common_data_model.system.System;
 import cms.sre.persistenceapi.TestConfiguration;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,13 +39,30 @@ public class SystemPersistenceServiceTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+
+    /**
+     * method that sets up a Jackson tester instance to write System objects to/from JSON
+     * @deprecated The use of the tester instance can be circumvented through other means, it's simply there
+     *             to aid in the conversion of JSON objects back and forth as opposed to creating new Strings
+     */
+    @Deprecated
     @Before
     public void setUp(){
         json.initFields(this, new ObjectMapper());
     }
 
+    /**
+     * Method to test that the Service handles an upsertion operation correctly, using an Http client method as a mean of
+     * delivering a request
+     * @throws Exception exception thrown if the Http Client operation is unsuccessful on the client-side(server sided issues
+     *                   should give HTTP errors such as 415 or 500).
+     */
     @Test
     public void upsertTest() throws Exception{
+
+        System system = new System();
+
+        ObjectMapper mapper = new ObjectMapper();
 
         String jsonRequest = "{\"name\":\"Name\",\"description\":\"Desc\",\"owner\":\"Owner\",\"toasters\":[{\"packerScript\":{\"scriptFile\":{\"filename\":\"File\",\"binaryFile\":null,\"contents\":null}},\"terraformScript\":{\"mainScript\":{\"filename\":\"File\",\"binaryFile\":null,\"contents\":null},\"variableScript\":null,\"providerScript\":null,\"dataSourcesScript\":null},\"persistentVolumes\":[]}],\"dependenciesMap\":null}";
 
@@ -67,12 +86,7 @@ public class SystemPersistenceServiceTest {
 
     }
 
-    @Ignore
-    @Test
-    public void restTemplateTest(){
 
-        System sys = this.testRestTemplate.postForObject("http://localhost:" + this.port + "test", new System().setDependenciesMap(null), System.class);
-        Assert.assertNotNull(sys);
-    }
+
 
 }

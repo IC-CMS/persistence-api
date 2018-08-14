@@ -16,6 +16,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import cms.sre.dna_common_data_model.system.System.*;
 
 @PropertySource(value="classpath:application.properties", ignoreResourceNotFound = true)
 @EnableMongoRepositories
@@ -96,12 +97,20 @@ public class App
                 .build();
     }
 
+    /**
+     * Autowiring for the bucketHandler, provides the cdefault name and region
+     * @return a new handler instance
+     */
     @Bean
     public BucketHandler bucketHandler(){
 
         return new BucketHandler(defaultBucketName, defaultRegion);
     }
 
+    /**
+     * Autowiring for amazonS3 instance
+     * @return a new S3 client with the standard region name
+     */
     @Bean
     public AmazonS3 amazonS3(){
         AmazonS3 s3 = AmazonS3ClientBuilder
@@ -111,6 +120,7 @@ public class App
         return s3;
 
     }
+
 
 
 //    @Override

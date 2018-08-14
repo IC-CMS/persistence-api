@@ -1,6 +1,7 @@
 package cms.sre.persistenceapi.repository;
 
 import cms.sre.persistenceapi.TestConfiguration;
+import cms.sre.persistenceapi.controller.SystemControllerTest;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -25,6 +26,9 @@ public class PersistedSystemRepositoryTest {
     @Autowired
     private PersistedSystemRepository persistedSystemRepository;
 
+    /**
+     * @see SystemControllerTest documentation
+     */
     @Test
     public void autowiringTest(){
         Assertions.assertThat(this.persistedSystemRepository)

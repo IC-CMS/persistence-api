@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A Handler class created to simplify the logic behind Amazon S3's bucket storage
+ */
 public class BucketHandler {
 
     private String bucketName;
@@ -49,7 +52,7 @@ public class BucketHandler {
     }
 
     /**
-     * Creates the Bucket corresponding ot the parameters of the Handler
+     * Creates the Bucket corresponding to the parameters of the autowired Handler
      */
     public void createBucket(){
 
@@ -65,6 +68,12 @@ public class BucketHandler {
             }
     }
 
+    /**
+     * method responsible for placing the file in the default bucket
+     * @param file the file ot be uploaded
+     * @param location the location to be placed at
+     * @return
+     */
     public boolean putObjectInBucket(File file, String location){
 
         boolean ret = false;
@@ -90,7 +99,7 @@ public class BucketHandler {
     }
 
     /**
-     *
+     * Method in charge of 
      * @param location The location of the File
      * @return A copy of the file
      * @throws Exception
@@ -126,6 +135,11 @@ public class BucketHandler {
 
         return ret;
     }
+
+    /**
+     * Deletes the file from the Bucket at the given location
+     * @param location- the location of the file to be deleted
+     */
     public void deleteFile(String location){
 
         s3.deleteObject(bucketName, location);

@@ -2,6 +2,10 @@ package cms.sre.persistenceapi.model;
 
 import cms.sre.dna_common_data_model.hashicorpFile.ScriptFile;
 
+/**
+ * The persisted equivalent of each scriptfile in S3. This is a subclass of the ScriptFile class and updates the object with
+ * a subdirectory, or String location value where the script file can be found
+ */
 public class S3PersistedScriptFile extends ScriptFile {
     private String s3Location;
 

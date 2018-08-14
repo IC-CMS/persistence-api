@@ -4,6 +4,10 @@ import cms.sre.dna_common_data_model.system.System;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * The persisted equivalent of the System objects from the External/Controller layer. These objects are assigned an Id and
+ * subclass the System object.
+ */
 @Document
 public class MongoPersistedSystem extends System {
 

@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
+/**
+ * Configuration class used in conjunction with out test methods, helps to streamline stnading up a mongoDB instance
+ * which is used to move test data around without impacting the actual instance.
+ */
 @org.springframework.boot.test.context.TestConfiguration
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class TestConfiguration extends App {
