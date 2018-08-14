@@ -1,6 +1,5 @@
 package cms.sre.persistenceapi.model.deserializer;
 
-import cms.sre.dna_common_data_model.system.System;
 import cms.sre.dna_common_data_model.system.Toaster;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;

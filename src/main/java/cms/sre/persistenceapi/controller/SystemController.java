@@ -1,19 +1,13 @@
 package cms.sre.persistenceapi.controller;
 
 import cms.sre.dna_common_data_model.system.System;
-import cms.sre.dna_common_data_model.system.Toaster;
-import cms.sre.persistenceapi.model.deserializer.ToasterKeyDeserializer;
 import cms.sre.persistenceapi.service.SystemPersistenceService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * The REST Controller of the interface, intakes and returns System data based on operations, follows a general REST
