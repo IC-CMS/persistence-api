@@ -82,7 +82,7 @@ public class App
     @Value("${mongodb.mongoReplicaSetName:#{null}}")
     private String mongoReplicaSetName;
 
-    @Value("${persistenceapi.defaultRegion:US_EAST_1}")
+    @Value("${persistenceapi.defaultRegion:us-east-1}")
     private String defaultRegion;
 
     @Value("${persistenceapi.defaultName:defaultBucketName}")
