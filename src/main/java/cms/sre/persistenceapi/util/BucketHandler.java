@@ -57,8 +57,8 @@ public class BucketHandler {
     public void createBucket(){
 
             try{
-                if(!s3.doesBucketExistV2(this.bucketName)){
-                    s3.createBucket(this.bucketName);
+                if(!this.s3.doesBucketExistV2(this.bucketName)){
+                    this.s3.createBucket(this.bucketName);
                     logger.info("Bucket creation successful.");
                 }
             }
@@ -72,7 +72,7 @@ public class BucketHandler {
      * method responsible for placing the file in the default bucket
      * @param file the file ot be uploaded
      * @param location the location to be placed at
-     * @return
+     * @return boolean confirmation that the operation succeeded
      */
     public boolean putObjectInBucket(File file, String location){
 
@@ -81,12 +81,12 @@ public class BucketHandler {
         //assign the file a location in the bucket
         //put the file in new location
 
-        if(!s3.doesBucketExistV2(this.bucketName)){
+        if(!this.s3.doesBucketExistV2(this.bucketName)){
             logger.info("Upload Unsuccessful: Bucket does not exist.");
         }
         else{
             try{
-                s3.putObject(this.bucketName, location, file);
+                this.s3.putObject(this.bucketName, location, file);
                 ret = true;
             }
             catch(Exception e){
@@ -102,12 +102,11 @@ public class BucketHandler {
      * Method in charge of 
      * @param location The location of the File
      * @return A copy of the file
-     * @throws Exception
      */
     public byte[] getFileFromBucket(String location){
 
         byte[] bytes = null;
-        S3Object object = s3.getObject(bucketName,  location);
+        S3Object object = this.s3.getObject(bucketName,  location);
 
         try{
             bytes = IOUtils.toByteArray(object.getObjectContent());
@@ -122,13 +121,13 @@ public class BucketHandler {
     /**
      * Indexes the Entire Bucket to see if the request file exists
      * @param location- location of the file
-     * @return
+     * @return boolean confirmation if the file exists and the given location
      */
     public boolean doesFileExist(String location){
         boolean ret = false;
 
 
-            if(s3.doesObjectExist(bucketName,  location)){
+            if(this.s3.doesObjectExist(bucketName,  location)){
                 ret = true;
             }
 
@@ -142,7 +141,7 @@ public class BucketHandler {
      */
     public void deleteFile(String location){
 
-        s3.deleteObject(bucketName, location);
+        this.s3.deleteObject(bucketName, location);
 
     }
 

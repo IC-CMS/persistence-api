@@ -21,7 +21,6 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import cms.sre.dna_common_data_model.system.System.*;
 
 @PropertySource(value="classpath:application.properties", ignoreResourceNotFound = true)
 @EnableMongoRepositories
@@ -125,6 +124,11 @@ public class App
         return s3;
 
     }
+
+    /**
+     * This Bean overrides the default Spring Http/Json converter. if you remove this, BAD THINGS WILL HAPPEN
+     * @return the overriding Converter to replace the default, Spring-given one.
+     */
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(){
