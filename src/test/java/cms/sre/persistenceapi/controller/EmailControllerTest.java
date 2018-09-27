@@ -1,5 +1,7 @@
-package cms.sre.persistenceapi.repository;
+package cms.sre.persistenceapi.controller;
 
+import cms.sre.dna_common_data_model.emailnotifier.Email;
+import cms.sre.dna_common_data_model.product_list.Product;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
@@ -16,16 +18,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
-public class PersistedSystemRepositoryTest {
+public class EmailControllerTest {
 
-    private static Logger logger = LoggerFactory.getLogger(PersistedSystemRepositoryTest.class);
+    private static Logger logger = LoggerFactory.getLogger(EmailControllerTest.class);
 
     private static MongodExecutable mongodExecutable;
 
@@ -61,11 +65,48 @@ public class PersistedSystemRepositoryTest {
     private int port;
 
     @Autowired
-    private PersistedSystemRepository persistedSystemRepository;
+    private EmailController emailController;
+
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     @Test
     public void autowiringTest(){
-        Assertions.assertThat(this.persistedSystemRepository)
+        Assertions.assertThat(this.emailController)
                 .isNotNull();
+    }
+
+    @Test
+    public void swagger2Test() {
+
+        String json = this.testRestTemplate.getForObject("http://localhost:" + this.port + "/v2/api-docs", String.class);
+
+        Assertions.assertThat(json)
+                .isNotNull()
+                .isNotEmpty()
+                .contains("\"name\":\"email-controller\"")
+                .contains("\"paths\"")
+                .contains("\"/email\"")
+                .contains("\"/email/{uuid}\"")
+                .contains("\"/email/{uuid}\"");
+    }
+
+    @Test
+    public void getEmailsTest(){
+        List<? extends Email> ret = this.testRestTemplate.getForObject("http://localhost:"+this.port+"/email", List.class);
+        Assertions.assertThat(ret)
+                .isNotNull();
+
+        Assertions.assertThat(ret.size())
+                .isEqualTo(0);
+    }
+
+    @Test
+    public void getEmailsByUuidTest(){
+        Email email = this.testRestTemplate.getForObject("http://localhost:"+this.port+"/email/uuid", Email.class);
+        Assertions.assertThat(email)
+                .isNull();
+
+
     }
 }

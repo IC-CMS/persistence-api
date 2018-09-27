@@ -2,6 +2,8 @@ package cms.sre.persistenceapi.controller;
 
 import cms.sre.dna_common_data_model.product_list.Product;
 import cms.sre.persistenceapi.service.ProductPersistenceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,13 +12,14 @@ import java.util.List;
 @RestController
 public class ProductController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private ProductPersistenceService productPersistenceService;
 
     @Autowired
     public ProductController(ProductPersistenceService productPersistenceService){
         this.productPersistenceService = productPersistenceService;
     }
-
 
     @GetMapping("/products")
     public List<Product> getProducts(){ return this.productPersistenceService.getProducts(); }
