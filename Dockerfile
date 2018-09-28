@@ -11,4 +11,4 @@ ENV JAVA_OPTS="-Dspring.config.location=/config/"
 ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
 
 # Add Maven dependencies (not shaded into the artifact; Docker-cached)
-ADD ./target/emailnotifier.jar /usr/share/myservice/myservice.jar
+ADD ./target/persistence-api.jar /usr/share/myservice/myservice.jar
