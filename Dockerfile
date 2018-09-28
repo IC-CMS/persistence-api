@@ -1,6 +1,14 @@
-FROM openjdk:8-alpine
-MAINTAINER David Hessler <davidh.092705@gmail.com>
+FROM openjdk:8-jre-alpine
 
-ENTRYPOINT ["/usr/bin/java", "-jar", "/usr/share/myservice/myservice.jar"]
+MAINTAINER Edward Moffatt <cmjug01@gmail.com>
 
-ADD target/persistence-api.jar /usr/share/myservice/myservice.jar
+ADD ./docker_entrypoint.sh /usr/local/bin/
+
+RUN chmod u+x /usr/local/bin/docker_entrypoint.sh
+
+ENV JAVA_OPTS="-Dspring.config.location=/config/"
+
+ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
+
+# Add Maven dependencies (not shaded into the artifact; Docker-cached)
+ADD ./target/persistence-api.jar /usr/share/myservice/myservice.jar

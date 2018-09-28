@@ -3,6 +3,8 @@ package cms.sre.persistenceapi.service;
 import cms.sre.dna_common_data_model.product_list.Product;
 import cms.sre.persistenceapi.model.PersistedProduct;
 import cms.sre.persistenceapi.repository.PersistedProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,6 +17,9 @@ import java.util.List;
 
 @Service
 public class ProductPersistenceService {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     private PersistedProductRepository persistedProductRepository;
     private MongoTemplate mongoTemplate;
