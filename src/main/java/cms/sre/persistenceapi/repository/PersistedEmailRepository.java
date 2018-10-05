@@ -16,4 +16,6 @@ public interface PersistedEmailRepository extends PagingAndSortingRepository<Per
 
     Long deleteByUuid(String uuid);
 
+    void delete(PersistedEmail email);
+
 }
