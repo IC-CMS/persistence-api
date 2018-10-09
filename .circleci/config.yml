@@ -33,13 +33,14 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}      
-      - run: mkdir -p /tmp/workspace/ && cp -r target /tmp/workspace && cp Dockerfile /tmp/workspace/target/
+      - run: mkdir -p /tmp/workspace/ && cp -r target /tmp/workspace && cp Dockerfile /tmp/workspace/target/ && cp docker_entrypoint.sh /tmp/workspace/target/
       - persist_to_workspace:
           root: /tmp/workspace/target
           paths:
             - ./*
             - ./*.jar
             - ./Dockerfile
+            - ./docker_entrypoint.sh
   test:
     docker:
       # specify the version you desire here
