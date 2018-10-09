@@ -47,9 +47,23 @@ public class EmailPersistenceService {
 
     public List<Email> getEmails(){
         LinkedList<Email> ret = new LinkedList<>();
-        this.persistedEmailRepository.findAll().forEach(persistedEmail -> {
-            ret.add(strip(persistedEmail));
-        });
+
+        List<PersistedEmail> emails = persistedEmailRepository.findAll();
+
+        for (PersistedEmail email : emails) {
+
+            // Check if an invalid email was stored in the database, if it was, log it and remove
+            if (email.getEmailAddress() == null || email.getSubject() == null || email.getBody() == null) {
+                logger.error("An invalid email was stored in the persistent store");
+                logger.error(email.toString());
+
+                persistedEmailRepository.delete(email);
+
+            } else {
+
+                ret.add(strip(email));
+            }
+        }
 
         return ret;
     }
@@ -77,6 +91,15 @@ public class EmailPersistenceService {
     public boolean deleteEmail(String uuid){
 
         persistedEmailRepository.deleteByUuid(uuid);
+
+        return true;
+    }
+
+    public boolean deleteEmail(Email email) {
+
+        PersistedEmail persistedEmail = new PersistedEmail(email);
+
+        persistedEmailRepository.delete(persistedEmail);
 
         return true;
     }
